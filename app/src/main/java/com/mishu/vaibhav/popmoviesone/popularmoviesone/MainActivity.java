@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         movieRecyclerView.setLayoutManager(movieLayoutManager);
 
         CallMovieServer task = new CallMovieServer(this);
-        task.execute();
+        task.execute(NetworkUtils.POPULAR);
     }
 
     @Override
@@ -48,19 +48,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        CallMovieServer task = new CallMovieServer(this);
         switch (item.getItemId()){
             case R.id.sort_popular:
-                //popular sort chosen
+                task.execute(NetworkUtils.POPULAR);
                 break;
 
             case R.id.sort_rating:
-                //rating sort chosen
+                task.execute(NetworkUtils.RATING);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    static class CallMovieServer extends AsyncTask<Void,Void,ArrayList<String>>{
+    static class CallMovieServer extends AsyncTask<String,Void,ArrayList<String>>{
 
         private WeakReference<MainActivity> activityReference;
 
@@ -69,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<String> doInBackground(Void... voids) {
+        protected ArrayList<String> doInBackground(String... type) {
             Log.i(LOG_TAG,"doinback");
             try {
                 movies = MovieDbJsonUtils.jsonStringToMovies(
                         NetworkUtils.getResponseFromHttpUrl(
-                                NetworkUtils.buildMovieUrl(NetworkUtils.POPULAR)
+                                NetworkUtils.buildMovieUrl(type[0])
                         )
                 );
             } catch (IOException e) {
