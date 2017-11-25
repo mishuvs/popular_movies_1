@@ -17,18 +17,26 @@ public class MovieDbJsonUtils {
 
     private static final String LOG_TAG = MovieDbJsonUtils.class.getSimpleName();
 
-    public static ArrayList<String> jsonStringToMovies(String jsonResponse){
+    public static ArrayList<Movie> jsonStringToMovies(String jsonResponse){
         JSONObject rootJson, movieJsonObj;
         JSONArray jsonArray;
-        String posterPath;
-        ArrayList<String> movies = new ArrayList<String>();
+        String movieTitle;
+        String movieUrlThumbnail;
+        String movieOverview;
+        double movieVoteAverage;
+        String movieReleaseDate;
+        ArrayList<Movie> movies = new ArrayList<Movie>();
         try{
             rootJson = new JSONObject(jsonResponse);
             jsonArray = rootJson.getJSONArray("results");
             for(int i=0; i < jsonArray.length(); i++) {
                 movieJsonObj = jsonArray.getJSONObject(i);
-                posterPath = movieJsonObj.getString("poster_path");
-                movies.add(i,posterPath);
+                movieOverview = movieJsonObj.getString("overview");
+                movieVoteAverage = movieJsonObj.getDouble("vote_average");
+                movieTitle = movieJsonObj.getString("title");
+                movieUrlThumbnail = movieJsonObj.getString("poster_path");
+                movieReleaseDate = movieJsonObj.getString("release_date");
+                movies.add(i, new Movie(movieTitle,movieUrlThumbnail,movieOverview,movieVoteAverage,movieReleaseDate));
             }
         }
         catch (JSONException e){
@@ -37,6 +45,23 @@ public class MovieDbJsonUtils {
         }
         Log.i(LOG_TAG, "The json object is: " + movies.toString());
         return movies;
+    }
+
+    public static class Movie{
+        public String movieTitle;
+        public String movieUrlThumbnail;
+        public String movieOverview;
+        public double movieVoteAverage;
+        public String movieReleaseDate;
+
+        Movie(String title, String urlThumbnail, String overview, double voteAverage, String releaseDate)
+        {
+            movieTitle = title;
+            movieUrlThumbnail = urlThumbnail;
+            movieOverview = overview;
+            movieVoteAverage = voteAverage;
+            movieReleaseDate = releaseDate;
+        }
     }
 
 }

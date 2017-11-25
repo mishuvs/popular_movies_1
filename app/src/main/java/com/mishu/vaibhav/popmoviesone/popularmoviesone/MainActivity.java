@@ -18,10 +18,11 @@ import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.NetworkUtils;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static ArrayList<String> movies;
+    static List<MovieDbJsonUtils.Movie> movies;
     private MovieAdapter adapter;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    static class CallMovieServer extends AsyncTask<String,Void,ArrayList<String>>{
+    static class CallMovieServer extends AsyncTask<String,Void,List<MovieDbJsonUtils.Movie>>{
 
         private WeakReference<MainActivity> activityReference;
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... type) {
+        protected List<MovieDbJsonUtils.Movie> doInBackground(String... type) {
             Log.i(LOG_TAG,"doinback");
             try {
                 movies = MovieDbJsonUtils.jsonStringToMovies(
@@ -85,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> urls) {
-            super.onPostExecute(urls);
+        protected void onPostExecute(List<MovieDbJsonUtils.Movie> movies) {
+            super.onPostExecute(movies);
 
             Log.i(LOG_TAG,"onpostexecute");
 
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             if (activity == null) return;
 
             Log.i(LOG_TAG,"activity not null... swapping list");
-            activity.adapter.swap(urls);
+            activity.adapter.swap(movies);
         }
     }
 }
