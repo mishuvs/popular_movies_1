@@ -2,7 +2,9 @@ package com.mishu.vaibhav.popmoviesone.popularmoviesone;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.NetworkInfo;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.MovieDbJsonUtils;
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.NetworkUtils;
@@ -42,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
         movieRecyclerView.setAdapter(adapter);
         movieRecyclerView.setLayoutManager(movieLayoutManager);
 
-        CallMovieServer task = new CallMovieServer(this);
-        String listPreference = sharedPref.getString(getString(R.string.list_preference),NetworkUtils.POPULAR);
-        task.execute(listPreference);//by popular or by ratings
+        if(isOnline()){
+            CallMovieServer task = new CallMovieServer(this);
+            String listPreference = sharedPref.getString(getString(R.string.list_preference),NetworkUtils.POPULAR);
+            task.execute(listPreference);//by popular or by ratings
+        }
+        else{
+            Toast.makeText(this,"No connection to internet",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -68,6 +76,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     static class CallMovieServer extends AsyncTask<String,Void,List<MovieDbJsonUtils.Movie>>{
