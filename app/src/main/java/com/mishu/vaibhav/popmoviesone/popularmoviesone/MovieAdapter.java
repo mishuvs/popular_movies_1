@@ -2,16 +2,12 @@ package com.mishu.vaibhav.popmoviesone.popularmoviesone;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Network;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.MovieDbJsonUtils;
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.NetworkUtils;
@@ -58,7 +54,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieHolder>
         Log.i(LOG_TAG,url);
         Picasso.with(context)
                 .load(url)
-                .placeholder(R.drawable.small_icon)
                 .fit()
                 .into(holder.poster);
 

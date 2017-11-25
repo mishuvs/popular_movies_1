@@ -1,9 +1,11 @@
 package com.mishu.vaibhav.popmoviesone.popularmoviesone;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Network;
 import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,11 +27,14 @@ public class MainActivity extends AppCompatActivity {
     static List<MovieDbJsonUtils.Movie> movies;
     private MovieAdapter adapter;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         adapter = new MovieAdapter(this,null);
         GridLayoutManager movieLayoutManager = new GridLayoutManager(this,2,GridLayoutManager.VERTICAL,false);
@@ -38,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         movieRecyclerView.setLayoutManager(movieLayoutManager);
 
         CallMovieServer task = new CallMovieServer(this);
-        task.execute(NetworkUtils.POPULAR);
+        String listPreference = sharedPref.getString(getString(R.string.list_preference),NetworkUtils.POPULAR);
+        task.execute(listPreference);//by popular or by ratings
     }
 
     @Override
@@ -52,10 +58,12 @@ public class MainActivity extends AppCompatActivity {
         CallMovieServer task = new CallMovieServer(this);
         switch (item.getItemId()){
             case R.id.sort_popular:
+                sharedPref.edit().putString(getString(R.string.list_preference),NetworkUtils.POPULAR).apply();
                 task.execute(NetworkUtils.POPULAR);
                 break;
 
             case R.id.sort_rating:
+                sharedPref.edit().putString(getString(R.string.list_preference),NetworkUtils.RATING).apply();
                 task.execute(NetworkUtils.RATING);
                 break;
         }

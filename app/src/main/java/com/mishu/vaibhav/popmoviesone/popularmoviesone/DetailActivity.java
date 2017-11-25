@@ -5,12 +5,15 @@ import android.databinding.DataBindingComponent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.databinding.ActivityDetailBinding;
 import com.mishu.vaibhav.popmoviesone.popularmoviesone.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(url)
                 .fit()
-                .into(binding.thumbnail);
+                .into(binding.movieThumbnail);
         binding.title.setText(movieTitle);
         binding.overview.setText(String.format("Plot Synopsis: \n%s", movieOverview));
         binding.rating.setText(String.format("Rating: %1$,.1f",movieVoteAverage));
